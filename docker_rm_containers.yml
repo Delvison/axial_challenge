@@ -1,0 +1,11 @@
+- hosts: servers
+  become: true 
+  tasks:
+    - name: stop redis container
+      command: "docker stop redis-service"
+    - name: rm redis container
+      command: docker rm redis-service
+    - name: stop rabbitmq container
+      command: "docker stop rabbitmq-service"
+    - name: rm rabbitmq container
+      command: docker rm rabbitmq-service

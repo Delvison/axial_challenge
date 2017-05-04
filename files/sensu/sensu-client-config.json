@@ -1,0 +1,24 @@
+{
+  "rabbitmq": {
+    "host": "34.203.12.42",
+    "port": 5672,
+    "user": "sensu",
+    "password": "sensu",
+    "vhost": "/"
+  },
+  "redis": {
+    "host": "34.203.12.42",
+    "port": 6379
+  },
+  "api": {
+    "host": "34.203.12.42",
+    "port": 4567
+  },
+  "client": {
+    "name": "sensu client",
+    "address": "34.203.12.42",
+    "subscriptions": [
+        "test"
+    ]
+  }
+}

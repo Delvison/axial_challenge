@@ -1,0 +1,12 @@
+# ansible -i hosts 34.203.12.42 -m debug -a "var=hostvars[inventory_hostname]"
+
+- hosts: sensu-master
+  become: true
+  roles:
+    - redis
+    - rabbitmq
+
+- hosts: all
+  become: true
+  roles:
+    - sensu

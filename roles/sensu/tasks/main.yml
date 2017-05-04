@@ -1,0 +1,71 @@
+
+- name: Add sensu gpg key
+  shell: "wget -q https://sensu.global.ssl.fastly.net/apt/pubkey.gpg -O- | sudo apt-key add -"
+
+- name: Add sensu repo to apt
+  shell: 'echo "deb     https://sensu.global.ssl.fastly.net/apt trusty main" | tee /etc/apt/sources.list.d/sensu.list'
+
+- name: Apt-get update
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install sensu
+  apt:
+    pkg: sensu
+    state: present
+
+- name: install uchiwa
+  apt:
+    pkg: uchiwa
+    state: installed
+  when: "'sensu-master' in group_names"
+
+- name: (master) Copy config file to /etc/sensu
+  copy:
+    src: "{{files_path}}/sensu/sensu-master-config.json"
+    dest: /etc/sensu/config.json
+  when: "'sensu-master' in group_names"
+
+- name: (client) Copy config file to /etc/sensu
+  copy:
+    src: "{{files_path}}/sensu/sensu-client-config.json"
+    dest: /etc/sensu/config.json
+  when: "'sensu-clients' in group_names"
+
+- name: Copy uchiwa config file to /etc/sensu
+  copy:
+    src: "{{files_path}}/sensu/uchiwa.json"
+    dest: /etc/sensu/uchiwa.json
+  when: "'sensu-master' in group_names"
+
+- name: Chown files to sensu:sensu
+  file:
+    path: /etc/sensu
+    owner: sensu
+    group: sensu
+
+- name: Start sensu-server
+  service:
+    name: sensu-server
+    state: started
+  when: "'sensu-master' in group_names"
+
+
+- name: Start sensu-api
+  service:
+    name: sensu-api
+    state: started
+  when: "'sensu-master' in group_names"
+
+
+- name: Start sensu-client
+  service:
+    name: sensu-client
+    state: started
+
+- name: Start uchiwa
+  service:
+    name: uchiwa
+    state: started
+  when: "'sensu-master' in group_names"
